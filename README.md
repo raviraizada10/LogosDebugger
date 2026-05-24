@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Logos Debugger — Interactive Thinking Mode HUD Dashboard
 
-## Getting Started
+![Logos Debugger UI Snapshot](./logos-debugger-ui.png)
 
-First, run the development server:
+**Logos Debugger** is a premium, high-performance web dashboard and local agentic developer harness designed to debug, trace, and inspect codebases using the official **Google Antigravity SDK** and local **Gemma / Gemini** models. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+It provides real-time streaming of local agent thought traces, temporal spines, variable transition trackers, and a fully interactive 2D node execution canvas, featuring **Human-in-the-Loop** execution steering.
+
+---
+
+## ✨ Features
+
+* **🧠 Antigravity Chat Panel**: A highly-responsive, multi-mode chat console featuring autocomplete codebase mentions (using `@`), real-time streaming tokenization, expandable **"🧠 Thinking Track"** blocks, and collapsible **"⚙️ Tool Execution"** parameters.
+  * *Layout Modes*: Seamlessly toggle between **Standard (Sidebar) View**, **Split 50/50 Screen**, and **Maximized (Ultra-Wide) View** for spacious debug workflows.
+* **🪐 Interactive 2D execution Canvas**: Powered by `@xyflow/react`, renders execution flow traces as interactive state nodes with dynamic colors and micro-animations representing `thinking`, `running`, `completed`, and `failed` operations.
+* **📂 Workspace File Explorer**: A state-connected directory tree that automatically highlights files accessed by the agent:
+  * 🟠 **Glowing Orange Dots** represent files **read** by the agent.
+  * 🟢 **Glowing Teal Dots** represent files **modified/written** by the agent.
+* **⏱️ Temporal Spinal Timeline**: A vertical chronologic list recording every node, execution trace, stdout log event, and bound state transition.
+* **🛡️ Glassmorphic Consent Gateways**: Suspends execution on risky write operations (`create_file`, `edit_file`, `run_command`), enabling the developer to **Approve** or **Steer** the agent's next logical step with specific notes.
+* **🗃️ Secure Environmental Keys**: Automatically inherits your workspace keys (`GEMINI_API_KEY`, etc.), keeping cleartext credentials 100% hidden from terminal listeners or CLI log dumps.
+
+---
+
+## 🏗️ Dual-Layer Architecture
+
+Logos separates sandbox filesystem operations from telemetry presentation layers:
+
+```
+                  LOCAL DEVELOPER MACHINE
++-----------------------------------------------------------+
+|                                                           |
+|  1. AGENT ENGINE (Python Sidecar Process)                 |
+|     Uses: google-antigravity SDK                          |
+|     - Binds filesystem capabilities to target workspace   |
+|     - Recursively inspects classes, imports, & subclasses |
+|     - Streams thoughts & intercepts risky tools natively  |
+|                                                           |
+|          │                                   ▲            |
+|          │ (HTTP POST telemetry)             │ (Long-Poll |
+|          │                                   │  Consent)  |
+|          ▼                                   │            |
+|                                                           |
+|  2. TELEMETRY GATEWAY & API BRIDGE (Next.js server-side)  |
+|     - POST /api/telemetry (publishes events to RxJS bus)  |
+|     - POST /api/session/wait (long-poll response bridge)  |
+|     - POST /api/session/approve (resolves consent promise)|
+|                                                           |
+|          │                                   ▲            |
+|          │ (Server-Sent Events Stream)       │ (HTTP POST |
+|          │                                   │  Consent)  |
+|          ▼                                   │            |
+|                                                           |
+|  3. VISUAL HUD DASHBOARD (Next.js Frontend React)         |
+|     - Workspace Selector & Persistence                    |
+|     - Left Sidebar: Workspace Folder-Tree File Explorer   |
+|     - Left Sidebar Switcher: Temporal Spinal Timeline     |
+|     - Center Canvas: Interactive 2D React Flow Node Graph |
+|     - Consent overlay: Glassmorphic Approval Modal        |
+|                                                           |
++-----------------------------------------------------------+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+For the complete API schema mapping and internal pipeline specifications, read the [LOGOS_ARCHITECTURE.md](./LOGOS_ARCHITECTURE.md) blueprint.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Quick Start & Setup
 
-## Learn More
+### 1. Prerequisites
+Ensure you have Python and Node installed:
+```bash
+python3 --version
+node --version
+```
 
-To learn more about Next.js, take a look at the following resources:
+Verify your python SDK dependencies:
+```bash
+pip3 install google-antigravity httpx
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Launch the HUD Server
+Navigate to the web application directory and boot up the development server:
+```bash
+cd logos-debugger
+npm install
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Open your Web Console
+Open your browser and navigate to:
+```text
+http://localhost:3000
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Connect Your Workspace
+1. Input your local codebase absolute path in the header folder picker (or hit the **📂 Open** button to trigger native folder picker).
+2. Configure your local Gemma endpoint or Gemini API Key under the **Gemma Settings** gear.
+3. Submit your debugging prompt inside the **Antigravity Chat Panel** and start steering your agent's thinking!
